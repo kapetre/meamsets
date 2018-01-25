@@ -16,7 +16,11 @@ CMD ["bash"]
 
 # install streamsets datacollector
 
-RUN yum install -y https://archives.streamsets.com/datacollector/1.2.1.0/rpm/streamsets-datacollector-1.2.1.0-1.noarch.rpm; 
+#RUN yum install -y https://archives.streamsets.com/datacollector/1.2.1.0/rpm/streamsets-datacollector-1.2.1.0-1.noarch.rpm; 
+
+RUN wget https://archives.streamsets.com/datacollector/3.0.2.0/rpm/el7/streamsets-datacollector-3.0.2.0-el7-all-rpms.tar
+RUN tar -xvf streamsets*tar
+RUN yum install streamsets-datacollector-3.0.2.0-el7-all-rpms/streamsets-*rpm -y
 
 # create links to config files
 RUN mkdir /opt/streamsets-datacollector/etc && ln -s /etc/sdc/sdc-security.policy /opt/streamsets-datacollector/etc/sdc-security.policy && ln -s /etc/sdc/sdc.properties /opt/streamsets-datacollector/etc/sdc.properties 
@@ -56,7 +60,7 @@ RUN rpm --import http://package.mapr.com/releases/pub/maprgpg.key
 # install mapr packages
 ADD maprtech.repo /etc/yum.repos.d/maprtech.repo 
 
-RUN yum install -y mapr-client mapr-kafka mapr-librdkafka mapr-posix-client-container mapr-librdkafka mapr-spark
+RUN yum install -y mapr-client mapr-kafka mapr-librdkafka mapr-posix-client-basic mapr-librdkafka mapr-spark
 RUN yum -y install vim wget sudo which tar openssh-clients ntp git httpd python-setuptools python-setuptools-devel glibc-common gcc* python-devel 
 
 # IPA DNS during docker build
