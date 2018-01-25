@@ -50,6 +50,9 @@ RUN useradd -l -s /bin/bash mapr -u 5000 -g 5000
 RUN groupadd -g 6000 pwner_dev
 RUN useradd -l -s /bin/bash streamsets -u 5001 -g 6000
 
+# import key explicitly to avoid ugly warnings
+RUN rpm --import http://package.mapr.com/releases/pub/maprgpg.key
+
 # install mapr packages
 ADD maprtech.repo /etc/yum.repos.d/maprtech.repo 
 
@@ -57,7 +60,7 @@ RUN yum install -y mapr-client mapr-kafka mapr-librdkafka mapr-posix-client-cont
 RUN yum -y install vim wget sudo which tar openssh-clients ntp git httpd python-setuptools python-setuptools-devel glibc-common gcc* python-devel 
 
 # IPA DNS during docker build
-ADD resolvconf /etc/resolv.conf 
+ADD resolv.conf /etc/resolv.conf 
 
 # Configure mapr
 USER root 
