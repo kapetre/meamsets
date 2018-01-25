@@ -11,10 +11,10 @@ WORKDIR /root
 
 # Create local mapr and streamsets users, to be dynamicallt reconfigured during setup script, 
 # afer matching host uid/gid is deteremind from the host, through sss bindings. 
-RUN groupadd -g 5000 mapr
-RUN useradd -l -s /bin/bash mapr -u 5000 -g 5000
-RUN groupadd -g 6000 pwner_dev
-RUN useradd -l -s /bin/bash streamsets -u 5001 -g 6000
+RUN groupadd -g 1005 mapr
+RUN useradd -l -s /bin/bash mapr -u 1005 -g 1005
+RUN groupadd -g 1475200006 pwner_dev
+RUN useradd -l -s /bin/bash streamsets -u 1475200018 -g 1475200006
 
 # Install packages for SSSD (enabling user identity passthrough)
 RUN yum install -y sssd-client sssd-krb5-common sudo libsss_idmap libsss_nss_idmap libsss_sudo sssd-common krb5-workstation krb5-lib 
