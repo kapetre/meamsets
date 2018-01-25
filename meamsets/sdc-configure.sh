@@ -16,32 +16,32 @@ set -e
 set -x
 
 # Create SDC user and group.
-addgroup -S -g ${SDC_UID} ${SDC_USER}
-adduser -S -u ${SDC_UID} -G ${SDC_USER} ${SDC_USER}
+#groupadd -S -g ${SDC_UID} ${SDC_USER}
+#useradd -S -u ${SDC_UID} -G ${SDC_USER} ${SDC_USER}
 
 # Download and extract SDC.
-curl -o /tmp/sdc.tgz -L "${SDC_URL}"
-mkdir /opt/streamsets-datacollector-${SDC_VERSION}
-tar xzf /tmp/sdc.tgz --strip-components 1 -C /opt/streamsets-datacollector-${SDC_VERSION}
-rm -rf /tmp/sdc.tgz
+#curl -o /tmp/sdc.tgz -L "${SDC_URL}"
+#mkdir /opt/streamsets-datacollector-${SDC_VERSION}
+#tar xzf /tmp/sdc.tgz --strip-components 1 -C /opt/streamsets-datacollector-${SDC_VERSION}
+#rm -rf /tmp/sdc.tgz
 
 # Add logging to stdout to make logs visible through `docker logs`.
-sed -i 's|INFO, streamsets|INFO, streamsets,stdout|' "${SDC_DIST}/etc/sdc-log4j.properties"
+#sed -i 's|INFO, streamsets|INFO, streamsets,stdout|' "${SDC_DIST}/etc/sdc-log4j.properties"
 
 # Workaround to address SDC-8005.
-if [ -d "${SDC_DIST}/user-libs" ]; then
-  cp -R "${SDC_DIST}/user-libs" "${USER_LIBRARIES_DIR}"
-fi
+#if [ -d "${SDC_DIST}/user-libs" ]; then
+#  cp -R "${SDC_DIST}/user-libs" "${USER_LIBRARIES_DIR}"
+#fi
 
 # Create necessary directories.
-mkdir -p /mnt \
-    "${SDC_DATA}" \
-    "${SDC_LOG}" \
-    "${SDC_RESOURCES}" \
-    "${USER_LIBRARIES_DIR}"
+#mkdir -p /mnt \
+#    "${SDC_DATA}" \
+#    "${SDC_LOG}" \
+#    "${SDC_RESOURCES}" \
+#    "${USER_LIBRARIES_DIR}"
 
 # Move configuration to /etc/sdc
-mv "${SDC_DIST}/etc" "${SDC_CONF}"
+#mv "${SDC_DIST}/etc" "${SDC_CONF}"
 
 # Update sdc-security.policy to include the custom stage library directory.
 cat >> "${SDC_CONF}/sdc-security.policy" << EOF
@@ -53,13 +53,14 @@ grant codebase "file:///opt/streamsets-datacollector-user-libs/-" {
 EOF
 
 # Use short option -s as long option --status is not supported on alpine linux.
-sed -i 's|--status|-s|' "${SDC_DIST}/libexec/_stagelibs"
+#sed -i 's|--status|-s|' "${SDC_DIST}/libexec/_stagelibs"
 
 # Setup filesystem permissions.
-chown -R "${SDC_USER}:${SDC_USER}" "${SDC_DIST}/streamsets-libs" \
-    "${SDC_CONF}" \
-    "${SDC_DATA}" \
-    "${SDC_LOG}" \
-    "${SDC_RESOURCES}" \
-    "${STREAMSETS_LIBRARIES_EXTRA_DIR}" \
-    "${USER_LIBRARIES_DIR}"
+#chown -R "${SDC_USER}" \ 
+#    "${SDC_DIST}/streamsets-libs" \
+#    "${SDC_CONF}" 
+#    "${SDC_DATA}" \
+#    "${SDC_LOG}" \
+#    "${SDC_RESOURCES}" \
+#    "${STREAMSETS_LIBRARIES_EXTRA_DIR}" \
+#    "${USER_LIBRARIES_DIR}"
