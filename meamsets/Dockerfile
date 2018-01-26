@@ -14,7 +14,7 @@ WORKDIR /root
 RUN groupadd -g 1005 mapr
 RUN useradd -l -s /bin/bash mapr -u 1005 -g 1005
 RUN groupadd -g 1475200006 pwner_dev
-RUN useradd -l -s /bin/bash streamsets -u 1475200018 -g 1475200006
+RUN useradd -l -s /bin/bash thekat -u 1001008 -g 1475200006
 
 # Install packages for SSSD (enabling user identity passthrough)
 RUN yum install -y sssd-client sssd-krb5-common sudo libsss_idmap libsss_nss_idmap libsss_sudo sssd-common krb5-workstation krb5-lib 
@@ -43,7 +43,7 @@ RUN systemctl enable mapr-posix-client-basic
 
 ### Streamsets Specific Steps (taken from streamsets docker examples) ###
 ARG SDC_VERSION=3.0.2.0
-ARG SDC_USER=streamsets
+ARG SDC_USER=thekat
 
 # install streamsets datacollector
 RUN wget https://archives.streamsets.com/datacollector/${SDC_VERSION}/rpm/el7/streamsets-datacollector-${SDC_VERSION}-el7-all-rpms.tar
@@ -56,7 +56,8 @@ ENV SDC_HOME=/opt/streamsets-datacollector \
     MAPR_HOME=/opt/mapr \
     SDC_DIST="/opt/streamsets-datacollector" \
     MAPR_VERSION=6.0.0 \
-    MAPR_MEP_VERSION=4
+    MAPR_MEP_VERSION=4 \
+    SDC_JAVA_OPTS="-Dmaprlogin.password.enabled=true ${SDC_JAVA_OPTS}"
 
 # Run the SDC configuration script.
 COPY sdc-configure.sh /
@@ -64,7 +65,7 @@ RUN /sdc-configure.sh && rm /sdc-configure.sh
 
 RUN /opt/streamsets-datacollector/bin/streamsets setup-mapr
 
-#USER ${SDC_USER}
+USER ${SDC_USER}
 EXPOSE 18630
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]

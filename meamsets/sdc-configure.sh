@@ -44,13 +44,13 @@ set -x
 #mv "${SDC_DIST}/etc" "${SDC_CONF}"
 
 # Update sdc-security.policy to include the custom stage library directory.
-cat >> "${SDC_CONF}/sdc-security.policy" << EOF
-
-// custom stage library directory
-grant codebase "file:///opt/streamsets-datacollector-user-libs/-" {
-  permission java.security.AllPermission;
-};
-EOF
+#cat >> "${SDC_CONF}/sdc-security.policy" << EOF
+#
+#// custom stage library directory
+#grant codebase "file:///opt/streamsets-datacollector-user-libs/-" {
+#  permission java.security.AllPermission;
+#};
+#EOF
 
 # Use short option -s as long option --status is not supported on alpine linux.
 #sed -i 's|--status|-s|' "${SDC_DIST}/libexec/_stagelibs"
