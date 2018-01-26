@@ -39,7 +39,7 @@ RUN mkdir /mapr
 RUN /opt/mapr/server/configure.sh -N lairfs -c -C nexus.evilcorp.internal,zerg.evilcorp.internal,letower.evilcorp.internal,ling1.evilcorp.internal  
 
 RUN systemctl enable mapr-posix-client-basic
-ADD mstreamsetup.sh /tmp/mstreamsetup.sh
+#ADD mstreamsetup.sh /tmp/mstreamsetup.sh
 
 ### Streamsets Specific Steps (taken from streamsets docker examples) ###
 ARG SDC_VERSION=3.0.2.0
@@ -50,32 +50,19 @@ RUN wget https://archives.streamsets.com/datacollector/${SDC_VERSION}/rpm/el7/st
 RUN tar -xvf streamsets*tar
 RUN yum install streamsets-datacollector-${SDC_VERSION}-el7-all-rpms/streamsets-*rpm -y
 
-# The paths below should generally be attached to a VOLUME for persistence.
-# SDC_CONF is where configuration files are stored. This can be shared.
-# SDC_DATA is a volume for storing collector state. Do not share this between containers.
-# SDC_LOG is an optional volume for file based logs.
-# SDC_RESOURCES is where resource files such as runtime:conf resources and Hadoop configuration can be placed.
-# STREAMSETS_LIBRARIES_EXTRA_DIR is where extra libraries such as JDBC drivers should go.
-# USER_LIBRARIES_DIR is where custom stage libraries are installed.
-#ENV SDC_CONF=/etc/sdc \
-#    SDC_DATA=/data \
-#    SDC_DIST="/opt/streamsets-datacollector-${SDC_VERSION}" \
-#    SDC_LOG=/logs \
-#    SDC_RESOURCES=/resources \
-#    USER_LIBRARIES_DIR=/opt/streamsets-datacollector/user-libs
-#ENV STREAMSETS_LIBRARIES_EXTRA_DIR="${SDC_DIST}/streamsets-libs-extras"
-
 ### MapR - Streamsets specific configuration ###
 ENV SDC_HOME=/opt/streamsets-datacollector \
     SDC_CONF=/etc/sdc \
     MAPR_HOME=/opt/mapr \
-   # SDC_DIST="/opt/streamsets-datacollector" \
+    SDC_DIST="/opt/streamsets-datacollector" \
     MAPR_VERSION=6.0.0 \
     MAPR_MEP_VERSION=4
 
 # Run the SDC configuration script.
 COPY sdc-configure.sh /
 RUN /sdc-configure.sh && rm /sdc-configure.sh
+
+RUN /opt/streamsets-datacollector/bin/streamsets setup-mapr
 
 #USER ${SDC_USER}
 EXPOSE 18630
